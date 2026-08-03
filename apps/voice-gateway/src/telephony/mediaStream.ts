@@ -3474,8 +3474,14 @@ export async function handleMediaStreamConnection(
       return classification;
     };
 
+    // The realtime endpoint is configurable so this gateway can speak to any server that
+    // implements the protocol -- including a self-hosted bridge in front of a different
+    // model. Everything below is unchanged: the events sent and handled are the same, so
+    // swapping the voice does not touch the 3,500 lines that carry the call.
+    const realtimeBase =
+      process.env.OPENAI_REALTIME_URL?.trim() || "wss://api.openai.com/v1/realtime";
     openAiSocket = new WebSocket(
-      `wss://api.openai.com/v1/realtime?model=${encodeURIComponent(runtimeConfig.OPENAI_REALTIME_MODEL)}`,
+      `${realtimeBase}${realtimeBase.includes("?") ? "&" : "?"}model=${encodeURIComponent(runtimeConfig.OPENAI_REALTIME_MODEL)}`,
       {
         headers: {
           Authorization: `Bearer ${runtimeConfig.OPENAI_API_KEY}`,
