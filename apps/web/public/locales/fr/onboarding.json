@@ -26,7 +26,7 @@
     "submitFailed": "Impossible d'enregistrer ce nom pour le moment. Réessayez."
   },
   "website": {
-    "title": "Entraînons LobbyStack avec votre site web",
+    "title": "Entraînons Reception avec votre site web",
     "description": "",
     "label": "Site web",
     "placeholder": "votreentreprise.com",
@@ -148,7 +148,7 @@
         "name": "Gratuit",
         "price": "0 $",
         "period": "",
-        "description": "Essayez LobbyStack avec assez d'utilisation pour le voir en action.",
+        "description": "Essayez Reception avec assez d'utilisation pour le voir en action.",
         "cta": "Commencer gratuitement",
         "highlights": {
           "voiceMinutes": "30 minutes vocales incluses",
@@ -325,7 +325,7 @@
     "continueFailed": "Impossible de continuer maintenant. Réessayez."
   },
   "attribution": {
-    "title": "Comment avez-vous connu LobbyStack ?",
+    "title": "Comment avez-vous connu Reception ?",
     "description": "Cela nous aide à savoir ce qui fonctionne.",
     "options": {
       "ai_assistant": "ChatGPT, Claude, etc.",

@@ -25,10 +25,12 @@ import { Main } from "@/components/layout/main";
 import {
   AcceptInvitePage,
   ConfirmEmailChangePage,
-  ForgotPasswordPage,
-  LoginPage,
-  SignupPage,
 } from "@/features/auth/AuthPages";
+import {
+  fetchEmbedCredentials,
+  readEmbedIdentity,
+  signInWithEmbedCredentials,
+} from "@/lib/embedAuth";
 import { AnalyticsPage } from "@/features/analytics/AnalyticsPage";
 import { ClaimDemoPage } from "@/features/demos/ClaimDemoPage";
 import { ProspectDemoPage } from "@/features/demos/ProspectDemoPage";
@@ -172,39 +174,53 @@ function AnalyticsPrivacySync() {
   return null;
 }
 
+/**
+ * There is no login page in this build, so an unauthenticated user cannot be sent to one.
+ *
+ * Embedded, the host's ticket buys credentials and the sign-in happens here, silently --
+ * the user waits on a loading screen and lands in their workspace. Opened directly, there
+ * is no ticket and nothing to do, so it says so once rather than looping forever on a
+ * blank screen.
+ */
 function RequireAuth(props: { children: ReactNode }) {
   const auth = useConvexAuth();
-  const location = useLocation();
+  const { signIn } = useAuthActions();
+  const [bootstrap, setBootstrap] = useState<"idle" | "running" | "failed">("idle");
 
-  if (auth.isLoading) {
+  useEffect(() => {
+    if (auth.isLoading || auth.isAuthenticated || bootstrap !== "idle") return;
+    const identity = readEmbedIdentity();
+    if (!identity) {
+      setBootstrap("failed");
+      return;
+    }
+    setBootstrap("running");
+    void (async () => {
+      const credentials = await fetchEmbedCredentials(identity);
+      const ok =
+        credentials !== null &&
+        (await signInWithEmbedCredentials(signIn, credentials));
+      if (!ok) setBootstrap("failed");
+    })();
+  }, [auth.isLoading, auth.isAuthenticated, bootstrap, signIn]);
+
+  if (auth.isLoading || (!auth.isAuthenticated && bootstrap !== "failed")) {
     return <LoadingScreen />;
   }
 
   if (!auth.isAuthenticated) {
-    const returnTo = `${location.pathname}${location.search}${location.hash}`;
     return (
-      <Navigate replace to={buildAuthPathWithReturnTo("/login", returnTo)} />
+      <div className="flex min-h-screen items-center justify-center p-6 text-center">
+        <p className="max-w-md text-sm text-muted-foreground">
+          This workspace opens from inside the app that hosts it.
+        </p>
+      </div>
     );
   }
 
   return props.children;
 }
 
-function PublicOnly(props: { children: ReactNode }) {
-  const auth = useConvexAuth();
-  const [searchParams] = useSearchParams();
-  const returnTo = getSafeReturnTo(searchParams.get("returnTo"));
-
-  if (auth.isLoading) {
-    return <LoadingScreen />;
-  }
-
-  if (auth.isAuthenticated) {
-    return <Navigate replace to={returnTo ?? "/"} />;
-  }
-
-  return props.children;
-}
 
 function selectActiveBusinessEntry(
   currentUser: { activeBusinessId?: Id<"businesses"> } | undefined | null,
@@ -1202,30 +1218,6 @@ export default function App() {
         <AnalyticsPrivacySync />
         <AffiliateReferralCapture />
         <Routes>
-          <Route
-            element={
-              <PublicOnly>
-                <LoginPage />
-              </PublicOnly>
-            }
-            path="/login"
-          />
-          <Route
-            element={
-              <PublicOnly>
-                <SignupPage />
-              </PublicOnly>
-            }
-            path="/signup"
-          />
-          <Route
-            element={
-              <PublicOnly>
-                <ForgotPasswordPage />
-              </PublicOnly>
-            }
-            path="/forgot-password"
-          />
           <Route element={<ConfirmEmailChangePage />} path="/confirm-email-change" />
           <Route element={<AcceptInvitePage />} path="/accept-invite" />
           <Route element={<ProspectDemoPage />} path="/demo/:token" />

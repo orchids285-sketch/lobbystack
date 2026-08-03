@@ -1,5 +1,5 @@
 {
-  "appName": "LobbyStack",
+  "appName": "Reception",
   "loading": {
     "title": "Chargement...",
     "description": "Synchronisation de votre espace et des réglages de la réceptionniste."
@@ -37,7 +37,7 @@
     "title": "Envoyer un commentaire",
     "description": "Dites-nous ce qui améliorerait ce tableau de bord.",
     "label": "Message de feedback",
-    "placeholder": "Une idée pour améliorer LobbyStack ? Dites-le à l’équipe.",
+    "placeholder": "Une idée pour améliorer Reception ? Dites-le à l’équipe.",
     "characterCount": "{{count}} / {{max}} caractères",
     "helpText": "Besoin d’aide ?",
     "helpCenter": "Centre d’aide",

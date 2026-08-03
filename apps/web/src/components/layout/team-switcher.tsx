@@ -27,20 +27,8 @@ export function TeamSwitcher({ isLoading = false }: TeamSwitcherProps) {
             className="gap-1.5"
             size="lg"
           >
-            <div className="flex aspect-square size-8 items-center justify-center text-sidebar-foreground">
-              <img
-                alt=""
-                className="size-[30px] shrink-0 object-contain dark:invert"
-                src="/brand/logo-icon.svg"
-              />
-            </div>
-            <div className="flex min-w-0 flex-1 items-center overflow-hidden">
-              <img
-                alt=""
-                className="h-[26px] w-auto max-w-44 object-contain dark:invert"
-                src="/brand/logo-wordmark.svg"
-              />
-            </div>
+            {/* No mark and no wordmark. This is one tool inside another product,
+                and a logo here would announce a vendor the user never chose. */}
           </SidebarMenuButton>
         )}
       </SidebarMenuItem>

@@ -16,11 +16,12 @@ export function SettingsLayout({ businessId }: SettingsLayoutProps) {
     return null;
   }
 
+  // Usage, billing and phone-number are hidden: they manage a subscription the host
+  // product owns and a phone line that needs a carrier account we have not opened. A tab
+  // that can only fail is worse than a missing one -- it reads as broken software rather
+  // than an unconfigured service. Restoring them is this list, one line each.
   const navigationItems = [
-    { label: t("sections.usage"), to: "/settings/usage" },
-    { label: t("sections.billing"), to: "/settings/plan" },
     { label: t("sections.business"), to: "/settings/team" },
-    { label: t("sections.phoneNumber"), to: "/settings/phone-number" },
     { label: t("sections.appearance"), to: "/settings/appearance" },
     { label: t("sections.notifications"), to: "/settings/notifications" },
   ] as const;

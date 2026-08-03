@@ -1,5 +1,5 @@
 {
-  "appName": "LobbyStack",
+  "appName": "Reception",
   "loading": {
     "title": "Loading...",
     "description": "Syncing your workspace and receptionist settings."
@@ -37,7 +37,7 @@
     "title": "Send feedback",
     "description": "Tell us what would make this dashboard better.",
     "label": "Feedback message",
-    "placeholder": "Have an idea to improve LobbyStack? Tell the team.",
+    "placeholder": "Have an idea to improve Reception? Tell the team.",
     "characterCount": "{{count}} / {{max}} characters",
     "helpText": "Need help?",
     "helpCenter": "Help Center",

@@ -153,7 +153,7 @@ export function AppSidebar({
             {
               title: t("nav:items.settings"),
               activeMatchPrefix: "/settings",
-              url: "/settings/usage",
+              url: "/settings/team",
               icon: AnimatedSettingsIcon,
             },
           ],

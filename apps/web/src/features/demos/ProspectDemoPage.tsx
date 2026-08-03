@@ -8,7 +8,6 @@ import { useTheme } from "next-themes";
 import type { TelemetryEventName } from "@lobbystack/telemetry";
 import { api } from "../../../../../convex/_generated/api";
 import { AuraVoiceDemo } from "@/components/web-voice/AuraVoiceDemo";
-import { LandingNavbar } from "@/components/marketing/landing-navbar";
 import {
   getWebCallEndpoint,
   PROSPECT_DEMO_WIDGET_ID,
@@ -115,7 +114,6 @@ function DemoShell({
         "xl:h-svh xl:overflow-hidden",
       )}
     >
-      <LandingNavbar locale={marketingLocale} />
       <div
         className={cn(
           "flex flex-1 flex-col items-center px-6 pt-12 pb-8",

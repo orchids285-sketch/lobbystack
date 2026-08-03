@@ -19,17 +19,15 @@ type IdentifyOperatorArgs = {
 
 const POSTHOG_KEY = import.meta.env.VITE_POSTHOG_KEY;
 const DEPLOYMENT_MODE = import.meta.env.VITE_DEPLOYMENT_MODE ?? "development";
-const LEGACY_WORKER_PROXY_HOST = "/ingest/posthog";
-const MANAGED_POSTHOG_PROXY_HOST = "https://ts.lobbystack.com";
+// The legacy relative path used to be rewritten to the upstream vendor's own analytics
+// proxy. In a self-hosted deployment that quietly shipped our customers' events to their
+// domain, which is not a default anyone would choose knowingly. The host is now used
+// exactly as configured, and an unset host means no analytics at all.
 
 function resolvePostHogHost(rawHost?: string): string | undefined {
   const host = rawHost?.trim();
   if (!host) {
     return undefined;
-  }
-
-  if (host === LEGACY_WORKER_PROXY_HOST) {
-    return MANAGED_POSTHOG_PROXY_HOST;
   }
 
   return host;

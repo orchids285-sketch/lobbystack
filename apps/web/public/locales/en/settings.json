@@ -454,7 +454,7 @@
       "sheetDescription": "Connect a Google Calendar and choose which calendar receives bookings.",
       "connectionSectionTitle": "Connection",
       "connectionSectionDescription": "Connect or reconnect the Google account that should receive bookings.",
-      "privacyNoticeText": "Connecting Google Calendar lets LobbyStack read your calendar availability and create, update, or delete appointment events on the calendar you select.",
+      "privacyNoticeText": "Connecting Google Calendar lets Reception read your calendar availability and create, update, or delete appointment events on the calendar you select.",
       "privacyPolicyLinkText": "Privacy Policy",
       "calendarSectionTitle": "Calendar settings",
       "calendarSectionDescription": "Choose the calendar to sync and review the latest sync state.",
@@ -834,7 +834,7 @@
     },
     "smsConsent": {
       "title": "Enable SMS alerts",
-      "description": "Confirm that you want LobbyStack to send workspace alerts to your verified phone number.",
+      "description": "Confirm that you want Reception to send workspace alerts to your verified phone number.",
       "cancel": "Cancel",
       "accept": "I agree, enable SMS"
     }

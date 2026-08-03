@@ -176,40 +176,8 @@ export function NavUser({
             side={isMobile ? "bottom" : "right"}
             sideOffset={4}
           >
-            {showUpgradeToPro ? (
-              <>
-                <DropdownMenuGroup>
-                  <DropdownMenuItem
-                    onBlur={() => void crownControls.start("normal")}
-                    onFocus={() => void crownControls.start("animate")}
-                    onMouseEnter={() => void crownControls.start("animate")}
-                    onMouseLeave={() => void crownControls.start("normal")}
-                    {...(onUpgradeToPro
-                      ? {
-                          onClick: onUpgradeToPro,
-                        }
-                      : {
-                          render: <Link to="/settings/plan" />,
-                        })}
-                  >
-                    <CrownAnimatedIcon controls={crownControls} />
-                    {t("sidebar.upgradeToPro")}
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
-                <DropdownMenuSeparator />
-              </>
-            ) : null}
+            {/* No upgrade offer: billing belongs to the host product. */}
             <DropdownMenuGroup>
-              <DropdownMenuItem
-                onBlur={() => stopIconAnimation(accountIconRef)}
-                onFocus={() => startIconAnimation(accountIconRef)}
-                onMouseEnter={() => startIconAnimation(accountIconRef)}
-                onMouseLeave={() => stopIconAnimation(accountIconRef)}
-                render={<Link to="/settings/account" />}
-              >
-                <UserIcon ref={accountIconRef} size={16} />
-                {t("sidebar.account")}
-              </DropdownMenuItem>
               <DropdownMenuItem
                 closeOnClick={false}
                 onClick={toggleTheme}
@@ -222,18 +190,8 @@ export function NavUser({
                 {t("sidebar.toggleTheme")}
               </DropdownMenuItem>
             </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onBlur={() => void logOutControls.start("normal")}
-              onClick={onSignOut}
-              onFocus={() => void logOutControls.start("animate")}
-              onMouseEnter={() => void logOutControls.start("animate")}
-              onMouseLeave={() => void logOutControls.start("normal")}
-              variant="destructive"
-            >
-              <LogOutAnimatedIcon controls={logOutControls} />
-              {t("sidebar.signOut")}
-            </DropdownMenuItem>
+            {/* No sign out. The session belongs to the host application, not to this
+                tool: the user never created it and there is no screen to return to. */}
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
