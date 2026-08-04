@@ -1,89 +1,14 @@
 import type { FormEvent } from "react";
-import { useCallback, useRef, useState } from "react";
-import { useAuthActions } from "@convex-dev/auth/react";
+import { useState } from "react";
 import { useConvexAuth, useQuery } from "convex/react";
 import { useTranslation } from "react-i18next";
-import type { TFunction } from "i18next";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 
 import { api } from "../../../../../convex/_generated/api";
-import { ForgotPasswordForm } from "@/components/forgot-password-form";
 import { Button } from "@/components/ui/button";
 import { OnboardingShell } from "@/features/onboarding/components/OnboardingShell";
-import { captureAnalyticsEvent } from "@/lib/analytics";
-import { buildAuthPathWithReturnTo } from "@/lib/auth-return-to";
-import { isValidEmailAddress, meetsSignupPasswordRequirements } from "@/lib/auth-validation";
 import { useObservedAction, useObservedMutation } from "@/lib/observed-convex";
-
-type AuthErrorFlow = "signIn" | "signUp" | "resetRequest" | "resetVerification";
-
-const DEV_TURNSTILE_SITE_KEY = "0x4AAAAAADKUjCqHD6BIFbWo";
-
-function capturePublicAuthEvent(name: "web.auth.login_succeeded" | "web.auth.signup_succeeded") {
-  captureAnalyticsEvent(name);
-}
-
-function getAuthErrorMessage(
-  error: unknown,
-  flow: AuthErrorFlow,
-  t: TFunction<"auth">,
-): string {
-  const message = error instanceof Error ? error.message : "";
-
-  if (message.includes("Missing environment variable `SITE_URL`")) {
-    return t("errors.passwordResetMissingSiteUrl");
-  }
-
-  if (flow === "signIn") {
-    if (message.includes("InvalidSecret") || message.includes("Invalid credentials")) {
-      return t("errors.incorrectCredentials");
-    }
-    return t("errors.incorrectCredentials");
-  }
-
-  if (flow === "signUp") {
-    if (message.includes("already exists")) {
-      return t("errors.accountExists");
-    }
-
-    if (message.includes("Invalid password")) {
-      return t("errors.invalidPassword");
-    }
-
-    if (message.includes("Turnstile")) {
-      return t("errors.turnstileFailed");
-    }
-
-    return t("errors.signupFailed");
-  }
-
-  if (flow === "resetVerification") {
-    if (
-      message.includes("Invalid code") ||
-      message.includes("Could not verify code") ||
-      message.includes("InvalidAccountId")
-    ) {
-      return t("errors.invalidResetCode");
-    }
-
-    if (message.includes("Invalid password")) {
-      return t("errors.invalidPassword");
-    }
-
-    return t("errors.passwordResetFailed");
-  }
-
-  return t("errors.passwordResetRequestFailed");
-}
-
-function isResetRequestLookupError(error: unknown): boolean {
-  const message = error instanceof Error ? error.message : "";
-  return message.includes("InvalidAccountId");
-}
-
-
-
 
 export function ConfirmEmailChangePage() {
   const { t } = useTranslation("auth");
@@ -97,10 +22,6 @@ export function ConfirmEmailChangePage() {
   const token = searchParams.get("token")?.trim() ?? "";
   const email = searchParams.get("email")?.trim().toLowerCase() ?? "";
   const hasConfirmationParams = token.length > 0 && email.length > 0;
-  const returnHref = auth.isAuthenticated ? "/settings/usage" : "/login";
-  const returnLabel = auth.isAuthenticated
-    ? t("confirmEmailChange.backToSettings")
-    : t("confirmEmailChange.backToLogin");
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -159,22 +80,20 @@ export function ConfirmEmailChangePage() {
             </Button>
           </form>
 
-          <p className="text-center text-sm">
-            <Link
-              className="font-medium text-foreground underline-offset-4 hover:underline"
-              to={returnHref}
-            >
-              {returnLabel}
-            </Link>
-          </p>
+          {auth.isAuthenticated ? (
+            <p className="text-center text-sm">
+              <Link
+                className="font-medium text-foreground underline-offset-4 hover:underline"
+                to="/settings/usage"
+              >
+                {t("confirmEmailChange.backToSettings")}
+              </Link>
+            </p>
+          ) : null}
         </div>
       </OnboardingShell>
     </div>
   );
-}
-
-function buildAuthReturnPath(pathname: string, search: string): string {
-  return `${pathname}${search}`;
 }
 
 export function AcceptInvitePage() {
@@ -188,10 +107,6 @@ export function AcceptInvitePage() {
 
   const token = searchParams.get("token")?.trim() ?? "";
   const hasToken = token.length > 0;
-  const returnPath = buildAuthReturnPath(
-    "/accept-invite",
-    searchParams.toString() ? `?${searchParams.toString()}` : "",
-  );
   const preview = useQuery(
     api.businesses.members.previewInvitation,
     hasToken ? { token } : "skip",
@@ -202,8 +117,6 @@ export function AcceptInvitePage() {
     preview.status === "pending" &&
     !preview.expired &&
     preview.businessName;
-  const loginHref = `/login?returnTo=${encodeURIComponent(returnPath)}`;
-  const signupHref = `/signup?returnTo=${encodeURIComponent(returnPath)}`;
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -279,37 +192,32 @@ export function AcceptInvitePage() {
               </Button>
             </form>
           ) : (
-            <div className="flex flex-col gap-3">
-              <Button
-                className="h-11 w-full"
-                disabled={!isInvitationValid || isPreviewLoading}
-                render={<Link to={loginHref} />}
-                type="button"
-              >
-                {t("acceptInvite.signIn")}
-              </Button>
-              <Button
-                className="h-11 w-full"
-                disabled={!isInvitationValid || isPreviewLoading}
-                render={<Link to={signupHref} />}
-                type="button"
-                variant="outline"
-              >
-                {t("acceptInvite.createAccount")}
-              </Button>
-            </div>
+            /*
+             * No sign-in and no create-account button.
+             *
+             * Both were still here, and both pointed at /login and /signup -- routes this
+             * fork no longer has. So they were not merely against the rule that the user
+             * never signs in to an embedded tool; they were two buttons that led nowhere.
+             *
+             * Reaching this branch at all means the automatic sign-in has not finished
+             * (or has failed), which is a state to describe rather than a state to ask
+             * the user to fix, because there is nothing here for them to do.
+             */
+            <p className="text-center text-sm text-muted-foreground">
+              {t("acceptInvite.waitingForSession")}
+            </p>
           )}
 
-          <p className="text-center text-sm">
-            <Link
-              className="font-medium text-foreground underline-offset-4 hover:underline"
-              to={auth.isAuthenticated ? "/settings/team" : "/login"}
-            >
-              {auth.isAuthenticated
-                ? t("acceptInvite.backToSettings")
-                : t("acceptInvite.backToLogin")}
-            </Link>
-          </p>
+          {auth.isAuthenticated ? (
+            <p className="text-center text-sm">
+              <Link
+                className="font-medium text-foreground underline-offset-4 hover:underline"
+                to="/settings/team"
+              >
+                {t("acceptInvite.backToSettings")}
+              </Link>
+            </p>
+          ) : null}
         </div>
       </OnboardingShell>
     </div>

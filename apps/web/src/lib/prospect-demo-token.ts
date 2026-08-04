@@ -86,7 +86,7 @@ function takeNestedClaimToken(url: URL): string | null {
     return null;
   }
   try {
-    const nested = new URL(returnTo, "https://lobbystack.local");
+    const nested = new URL(returnTo, "https://demo.invalid");
     if (nested.pathname !== "/claim-demo") {
       return null;
     }

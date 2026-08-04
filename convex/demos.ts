@@ -584,7 +584,10 @@ export const previewProspectDemo = query({
       suggestedPrompts: demo.suggestedPrompts,
       websiteUrl: demo.websiteUrl,
       expiresAt: demo.expiresAt,
-      signupPath: `/signup?returnTo=${encodeURIComponent("/claim-demo")}`,
+      // Straight to the claim page. This used to route through /signup, a page this fork
+      // no longer has -- so the demo's only call to action led nowhere. The claim route
+      // establishes the session itself, which is what the sign-up step was there for.
+      signupPath: "/claim-demo",
       campaignId: demo.campaignId ?? null,
     };
   },

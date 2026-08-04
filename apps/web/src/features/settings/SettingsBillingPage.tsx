@@ -905,7 +905,7 @@ function PlanSection({
         onBillingIntervalChange={setUpgradeBillingInterval}
         onContactEnterprise={() => {
           window.location.assign(
-            `mailto:hello@lobbystack.ai?subject=${encodeURIComponent(
+            `mailto:support@foundreach.com?subject=${encodeURIComponent(
               t("billing.upgradeDialog.enterpriseSubject"),
             )}`,
           );

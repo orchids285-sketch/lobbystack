@@ -30,3 +30,6 @@ CLAUDE.md
 PLAN.md
 security_best_practices_report.md
 mintlify/.atlas-analysis.json
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat

@@ -10,7 +10,9 @@ type TeamSwitcherProps = {
   isLoading?: boolean;
 };
 
-const BRAND_NAME = "LobbyStack";
+// The wordmark below is gone, but this survived as the button's accessible name -- so a
+// screen-reader user was still told the vendor's name where a sighted user saw nothing.
+const BRAND_NAME = "Reception";
 
 export function TeamSwitcher({ isLoading = false }: TeamSwitcherProps) {
   return (

@@ -14,10 +14,6 @@ import {
   WorkspaceRouteSkeleton,
 } from "@/components/app-route-skeletons";
 import { useObservedAction, useObservedMutation } from "@/lib/observed-convex";
-import {
-  buildAuthPathWithReturnTo,
-  getSafeReturnTo,
-} from "@/lib/auth-return-to";
 import { AuthenticatedLayout } from "@/components/layout/authenticated-layout";
 import { Button } from "@/components/ui/button";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -53,8 +49,6 @@ import { SettingsBusinessPage } from "@/features/settings/SettingsBusinessPage";
 import { SettingsPhoneNumberPage } from "@/features/settings/SettingsPhoneNumberPage";
 import {
   SettingsBillingCompliancePage,
-  SettingsBillingPage,
-  SettingsBillingUsagePage,
 } from "@/features/settings/SettingsBillingPage";
 import { SettingsAccountPage } from "@/features/settings/SettingsAccountPage";
 import { SettingsNotificationsPage } from "@/features/settings/SettingsNotificationsPage";
@@ -353,7 +347,6 @@ function getNonAdminOnboardingElement(
 }
 
 function WorkspaceShell() {
-  const { signOut } = useAuthActions();
   const location = useLocation();
   const currentUser = useQuery(api.users.current, {});
   const businesses = useQuery(api.businesses.admin.listForCurrentUser, {});
@@ -396,10 +389,6 @@ function WorkspaceShell() {
     new URLSearchParams(location.search).get("checkout") === "success";
   useAffiliateAttributionBinding(businessId);
 
-  async function handleSignOut(): Promise<void> {
-    resetAnalyticsIdentity();
-    await signOut();
-  }
 
   useEffect(() => {
     if (isBootstrapLoading) {
@@ -482,11 +471,21 @@ function WorkspaceShell() {
 
   const usesFixedMain = AI_SMS_DASHBOARD_ENABLED && location.pathname === "/messages";
 
+  /**
+   * Dead plumbing, kept deliberately.
+   *
+   * The visible control is gone -- it sat in the corner of every onboarding screen -- but
+   * the prop is threaded through some sixty call sites. Removing it all would be a large
+   * refactor with real breakage risk and nothing a user could see, so the handler stays
+   * and does nothing. There is no session of theirs to end.
+   */
+  function handleSignOut(): void {}
+
   return (
     <AuthenticatedLayout
       {...(billingStatus ? { billingStatus } : {})}
       isLoading={isWorkspaceLoading}
-      onSignOut={() => void handleSignOut()}
+      onSignOut={handleSignOut}
       {...(businessId ? { businessId } : {})}
       {...(activeBusiness?.name ? { businessName: activeBusiness.name } : {})}
       {...(activeBusiness?.slug ? { businessSlug: activeBusiness.slug } : {})}
@@ -678,13 +677,7 @@ function WorkspaceShell() {
                 path="phone-number"
               />
               <Route
-                element={
-                  businessId ? (
-                    <SettingsBillingPage businessId={businessId} />
-                  ) : (
-                    <Navigate replace to="/settings" />
-                  )
-                }
+                element={<Navigate replace to="/settings" />}
                 path="plan"
               />
               {AI_SMS_DASHBOARD_ENABLED && (
@@ -700,13 +693,7 @@ function WorkspaceShell() {
                 />
               )}
               <Route
-                element={
-                  businessId ? (
-                    <SettingsBillingUsagePage businessId={businessId} />
-                  ) : (
-                    <Navigate replace to="/settings" />
-                  )
-                }
+                element={<Navigate replace to="/settings" />}
                 path="usage"
               />
               <Route
@@ -735,7 +722,6 @@ function WorkspaceShell() {
  * record + the business list have all loaded.
  */
 function useOnboardingContext() {
-  const { signOut } = useAuthActions();
   const navigate = useNavigate();
   const currentUser = useQuery(api.users.current, {});
   const businesses = useQuery(api.businesses.admin.listForCurrentUser, {});
@@ -760,10 +746,6 @@ function useOnboardingContext() {
     });
   }, [businessId, currentUser?._id, businesses, currentUser]);
 
-  async function handleSignOut(): Promise<void> {
-    resetAnalyticsIdentity();
-    await signOut();
-  }
 
   return {
     currentUser,
@@ -771,7 +753,8 @@ function useOnboardingContext() {
     activeBusiness,
     canManageTenant,
     isLoading: businesses === undefined || currentUser === undefined,
-    onSignOut: () => void handleSignOut(),
+    // Kept for the prop threaded through the onboarding tree; the control it fed is gone.
+    onSignOut: () => {},
     navigate,
   };
 }
@@ -972,7 +955,7 @@ function OnboardingVerifyPhoneRoute() {
     })
       .then(() => {
         if (!cancelled) {
-          navigate("/onboarding/plan", { replace: true });
+          navigate("/onboarding/number", { replace: true });
         }
       })
       .catch(() => {
@@ -1286,12 +1269,11 @@ export default function App() {
             }
             path="/onboarding/number"
           />
+          {/* Kept as a redirect rather than deleted: nothing links here any more, but a
+              saved link or a browser autocomplete still would, and landing a paying
+              customer on a price list is the thing being removed -- not the URL. */}
           <Route
-            element={
-              <RequireAuth>
-                <OnboardingPlanRoute />
-              </RequireAuth>
-            }
+            element={<Navigate replace to="/onboarding/number" />}
             path="/onboarding/plan"
           />
           <Route

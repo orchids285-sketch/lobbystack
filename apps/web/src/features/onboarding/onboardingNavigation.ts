@@ -27,11 +27,12 @@ export function getOnboardingRouteForStage(
   stage: string | undefined,
   billingPlan?: OnboardingBillingPlan,
 ): string | null {
-  // The plan step was inserted before number selection. Workspaces persisted
-  // at a number stage by the old flow must choose a plan before continuing.
-  if (onboardingStageNeedsBillingPlan(stage) && billingPlan === "free_cloud") {
-    return "/onboarding/plan";
-  }
+  // The plan step is skipped rather than removed.
+  //
+  // It sat at step 8 of eleven and asked the user to pick a paid plan for a tool the host
+  // already charges them for. Deleting the route would have stranded anyone whose saved
+  // stage points at it, so every path that led to the price list now leads to the step
+  // after it and the funnel still completes.
 
   switch (stage) {
     case "create_business":
@@ -50,7 +51,7 @@ export function getOnboardingRouteForStage(
     case "phone_number_claiming":
       return "/onboarding/number";
     case "plan":
-      return "/onboarding/plan";
+      return "/onboarding/number";
     case "attribution":
       return "/onboarding/attribution";
     default:
@@ -73,7 +74,8 @@ export function onboardingNavigableStep(stage: string | undefined): number {
 }
 
 export function getPhoneVerificationApprovedRedirect(
-  onboardingStage: string | undefined,
-): "/onboarding/number" | "/onboarding/plan" {
-  return onboardingStage === "completed" ? "/onboarding/number" : "/onboarding/plan";
+  _onboardingStage: string | undefined,
+): "/onboarding/number" {
+  // Both branches used to differ only in whether the user was sent to the price list.
+  return "/onboarding/number";
 }

@@ -53,13 +53,13 @@ describe("analytics", () => {
       maskAllInputs: true,
     });
     expect(config.session_recording.maskCapturedNetworkRequestFn({
-      name: "https://app.lobbystack.com/demo/acme-secret",
+      name: "https://app.foundreach.com/demo/acme-secret",
       requestBody: { prospectDemoToken: "acme-secret" },
       responseBody: { token: "acme-secret" },
       requestHeaders: { Authorization: "Bearer secret" },
       responseHeaders: { "Set-Cookie": "secret" },
     })).toEqual({
-      name: "https://app.lobbystack.com/demo/[redacted]",
+      name: "https://app.foundreach.com/demo/[redacted]",
     });
     expect(config.__preview_eager_load_replay).toBeUndefined();
     expect(config.session_recording.full_snapshot_interval_millis).toBeUndefined();
@@ -82,14 +82,14 @@ describe("analytics", () => {
       event: "$pageview",
       properties: {
         $current_url:
-          "https://app.lobbystack.com/settings/plan?checkout=success&customer_session_token=polar_cst_secret",
+          "https://app.foundreach.com/settings/plan?checkout=success&customer_session_token=polar_cst_secret",
         $pathname: "/settings/plan",
         customer_session_token: "polar_cst_secret",
       },
     });
 
     expect(event.properties.$current_url).toBe(
-      "https://app.lobbystack.com/settings/plan?checkout=success",
+      "https://app.foundreach.com/settings/plan?checkout=success",
     );
     expect(event.properties.customer_session_token).toBe("[redacted]");
   });
@@ -132,22 +132,22 @@ describe("analytics", () => {
       event: "$snapshot",
       properties: {
         $snapshot_data: {
-          href: "https://app.lobbystack.com/demo/acme-secret",
+          href: "https://app.foundreach.com/demo/acme-secret",
         },
         $exception_list: [
           {
             value:
-              "Request failed while loading https://app.lobbystack.com/demo/acme-secret",
+              "Request failed while loading https://app.foundreach.com/demo/acme-secret",
           },
         ],
       },
     });
 
     expect(event.properties.$snapshot_data.href).toBe(
-      "https://app.lobbystack.com/demo/[redacted]",
+      "https://app.foundreach.com/demo/[redacted]",
     );
     expect(event.properties.$exception_list[0].value).toBe(
-      "Request failed while loading https://app.lobbystack.com/demo/[redacted]",
+      "Request failed while loading https://app.foundreach.com/demo/[redacted]",
     );
   });
 
@@ -165,12 +165,12 @@ describe("analytics", () => {
       uuid: "event-demo",
       event: "$pageview",
       properties: {
-        $current_url: "https://app.lobbystack.com/demo/acme-dental-Ab12Cd34",
+        $current_url: "https://app.foundreach.com/demo/acme-dental-Ab12Cd34",
         $pathname: "/demo/acme-dental-Ab12Cd34",
       },
     });
     expect(demoEvent.properties.$current_url).toBe(
-      "https://app.lobbystack.com/demo/[redacted]",
+      "https://app.foundreach.com/demo/[redacted]",
     );
     expect(demoEvent.properties.$pathname).toBe("/demo/[redacted]");
 
@@ -179,13 +179,13 @@ describe("analytics", () => {
       event: "$pageview",
       properties: {
         $current_url:
-          "https://app.lobbystack.com/claim-demo?token=acme-dental-Ab12Cd34",
+          "https://app.foundreach.com/claim-demo?token=acme-dental-Ab12Cd34",
         $pathname: "/claim-demo",
         token: "acme-dental-Ab12Cd34",
       },
     });
     expect(claimEvent.properties.$current_url).toBe(
-      "https://app.lobbystack.com/claim-demo",
+      "https://app.foundreach.com/claim-demo",
     );
     expect(claimEvent.properties.token).toBe("[redacted]");
 
@@ -194,12 +194,12 @@ describe("analytics", () => {
       event: "$pageview",
       properties: {
         $current_url:
-          "https://app.lobbystack.com/signup?returnTo=%2Fclaim-demo%3Ftoken%3Dacme-dental-Ab12Cd34",
+          "https://app.foundreach.com/signup?returnTo=%2Fclaim-demo%3Ftoken%3Dacme-dental-Ab12Cd34",
         $pathname: "/signup",
       },
     });
     expect(signupEvent.properties.$current_url).toBe(
-      "https://app.lobbystack.com/signup?returnTo=%2Fclaim-demo",
+      "https://app.foundreach.com/signup?returnTo=%2Fclaim-demo",
     );
   });
 });

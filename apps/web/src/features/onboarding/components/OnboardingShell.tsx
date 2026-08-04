@@ -43,7 +43,7 @@ const onboardingStepRoutes: Record<number, string> = {
   5: "/onboarding/greeting",
   6: "/onboarding/verify-phone",
   7: "/onboarding/verify-phone/code",
-  8: "/onboarding/plan",
+  8: "/onboarding/number",
   9: "/onboarding/number",
   10: "/onboarding/attribution",
 };
@@ -101,15 +101,9 @@ export function OnboardingShell({
 
   return (
     <div className="relative flex min-h-svh w-full flex-col bg-background text-foreground">
-      {onSignOut ? (
-        <button
-          className="absolute right-6 top-6 rounded-full px-4 py-3 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-          onClick={onSignOut}
-          type="button"
-        >
-          {t("shell.signOut")}
-        </button>
-      ) : null}
+      {/* No sign-out. It sat in the corner of every onboarding screen, far from the
+          navigation, which is how it survived the first pass -- and it ends a session the
+          user never created. */}
 
       <main className="flex flex-1 flex-col items-center px-6 py-12">
         <div className={cn("my-auto flex w-full flex-col items-center", widthMap[width])}>

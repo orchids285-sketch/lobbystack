@@ -3,7 +3,14 @@ import type { ReactNode } from "react";
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   return (
-    <NextThemesProvider attribute="class" defaultTheme="system" enableSystem>
+    // Forced: this runs inside a dark product, and letting a light operating system
+    // repaint half of it is not a preference worth honouring here.
+    <NextThemesProvider
+      attribute="class"
+      defaultTheme="dark"
+      forcedTheme="dark"
+      enableSystem={false}
+    >
       {children}
     </NextThemesProvider>
   );

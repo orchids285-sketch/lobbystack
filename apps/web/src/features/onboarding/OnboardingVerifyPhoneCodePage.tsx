@@ -14,7 +14,7 @@ import { captureAnalyticsEvent } from "@/lib/analytics";
 import { useObservedAction } from "@/lib/observed-convex";
 
 type OnboardingVerifyPhoneCodePageProps = {
-  approvedRedirectTo?: "/onboarding/number" | "/onboarding/plan";
+  approvedRedirectTo?: "/onboarding/number";
   businessId: Id<"businesses">;
   phoneE164: string;
   onSignOut: () => void;
@@ -31,7 +31,7 @@ function maskPhone(phone: string): string {
 }
 
 export function OnboardingVerifyPhoneCodePage({
-  approvedRedirectTo = "/onboarding/plan",
+  approvedRedirectTo = "/onboarding/number",
   businessId,
   phoneE164,
   onSignOut,

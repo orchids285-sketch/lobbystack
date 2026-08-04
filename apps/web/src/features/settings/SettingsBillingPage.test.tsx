@@ -664,7 +664,7 @@ describe("SettingsBillingPage AI SMS add-on", () => {
 
     expect(startCheckoutMock).not.toHaveBeenCalled();
     expect(window.location.assign).toHaveBeenCalledWith(
-      "mailto:hello@lobbystack.ai?subject=billing.upgradeDialog.enterpriseSubject",
+      "mailto:support@foundreach.com?subject=billing.upgradeDialog.enterpriseSubject",
     );
   });
 

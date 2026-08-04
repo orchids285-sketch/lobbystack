@@ -121,13 +121,13 @@ export function FeedbackWidget({ businessId, className }: FeedbackWidgetProps) {
               <div className="flex items-center justify-between gap-3">
                 <p className="min-w-0 text-sm text-muted-foreground">
                   {t("feedback.helpText")}{" "}
-                  <a className="text-primary underline underline-offset-4" href="mailto:support@lobbystack.com">
+                  <a className="text-primary underline underline-offset-4" href="mailto:support@foundreach.com">
                     {t("feedback.contactLink")}
                   </a>{" "}
                   {t("feedback.helpTextSeparator")}{" "}
                   <a
                     className="text-primary underline underline-offset-4"
-                    href="https://docs.lobbystack.com"
+                    href="https://docs.foundreach.com"
                     rel="noreferrer"
                     target="_blank"
                   >
@@ -150,7 +150,7 @@ export function FeedbackWidget({ businessId, className }: FeedbackWidgetProps) {
               className="text-sidebar-foreground hover:bg-transparent hover:text-sidebar-accent-foreground"
               render={
                 <a
-                  href="https://docs.lobbystack.com"
+                  href="https://docs.foundreach.com"
                   rel="noreferrer"
                   target="_blank"
                 />

@@ -549,7 +549,7 @@ export function OnboardingPlanPage({
       }
 
       window.location.assign(
-        `mailto:hello@lobbystack.ai?subject=${encodeURIComponent(t("plan.enterpriseSubject"))}`,
+        `mailto:support@foundreach.com?subject=${encodeURIComponent(t("plan.enterpriseSubject"))}`,
       );
     } catch (continueError) {
       setError(

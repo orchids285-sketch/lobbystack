@@ -429,6 +429,16 @@ export function useWebVoiceCall({
       return;
     }
 
+    // No voice service configured. This is checked before anything else because the
+    // alternative is worse than a clear refusal: an empty endpoint makes the session URL
+    // relative, so the call would be attempted against this app's own origin and fail as
+    // a puzzling 404 -- after the browser had already asked the user for their microphone.
+    if (!endpoint.trim()) {
+      setErrorKey("unavailable");
+      setStatus("idle");
+      return;
+    }
+
     const attemptId = ++startCallAttemptRef.current;
     let localStream: MediaStream | null = null;
     let peerConnection: RTCPeerConnection | null = null;
